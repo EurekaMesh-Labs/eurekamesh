@@ -1,4 +1,4 @@
-from publish.code.experiments.parser import parse_llm_smiles_output
+from experiments.parser import parse_llm_smiles_output
 
 def test_parse_json_array():
     text = '["CCO", "C1=CC=CC=C1"]'

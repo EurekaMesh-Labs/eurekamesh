@@ -1,0 +1,31 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# macOS
+.DS_Store
+
+# Runtime logs and PIDs
+*.log
+*.pid
+abtest_output.log
+
+# Reports and artifacts
+report/
+
+# Data artifacts (keep sample small files manually if needed)
+data/*.json
+data/*.csv
+*.jsonl
+# Root-level experiment artifacts
+abtest_*results_*.json
+abtest_filters_results_*.json
+
+# Virtual envs
+.venv/
+.env/
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+

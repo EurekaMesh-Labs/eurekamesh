@@ -1,0 +1,15 @@
+name: ccad
+channels:
+  - rdkit
+  - conda-forge
+dependencies:
+  - python=3.11
+  - rdkit=2023.09.5
+  - pip
+  - pip:
+      - aiohttp
+      - numpy
+      - matplotlib
+      - pytest
+      - scikit-learn
+      - sentence-transformers

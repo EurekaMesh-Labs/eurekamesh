@@ -34,6 +34,24 @@ jobs:
         run: |
           make test
 
+      - name: Run baseline (MOCK_LLM)
+        env:
+          MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"
+          MPLBACKEND: Agg
+        shell: bash -l {0}
+        run: |
+          make baseline
+
+      - name: Run A/B/C (MOCK_LLM, quick)
+        env:
+          MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"
+          RUNS: "1"
+          TARGET: "60"
+          MPLBACKEND: Agg
+        shell: bash -l {0}
+        run: |
+          make abtest
+
       - name: Build figures and report (MOCK_LLM)
         env:
           MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"

@@ -2,6 +2,7 @@ import asyncio
 import os
 import json
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, Any, List
 
 from eurekamesh.core import CCAdEngine
@@ -144,6 +145,8 @@ def summarize(r: Dict[str,Any]):
     avg_dup = (sum(r['duplicate_rates'])/len(r['duplicate_rates'])) if r['duplicate_rates'] else 0.0
     return upt, avg_dup
 
+BASE = Path('publish') if Path('publish/code').exists() else Path('.')
+
 async def main():
     print(f"\nA/B/C Context + Filters (canon ON; runs={RUNS}; ctx={MAX_CONTEXT_ITEMS}; target={TARGET}; RAG=MiniLM)\n")
     results: List[Dict[str,Any]] = []
@@ -196,15 +199,16 @@ async def main():
         'total_cost_usd': total_cost
     }
     ts = datetime.now().strftime('%Y%m%d_%H%M%S')
-    fname = f"publish/abtest_filters_results_{ts}.json"
-    with open(fname, 'w') as f:
+    out_json = BASE / f"abtest_filters_results_{ts}.json"
+    out_jsonl = BASE / f"abtest_filters_results_{ts}.jsonl"
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    with open(out_json, 'w') as f:
         json.dump(out, f, indent=2)
     # JSONL structured per-run
-    jsonl = f"publish/abtest_filters_results_{ts}.jsonl"
-    with open(jsonl, 'w') as f:
+    with open(out_jsonl, 'w') as f:
         for r in results:
             f.write(json.dumps({"event":"abtest_run", **r}) + "\n")
-    print(f"Saved: {fname}")
+    print(f"Saved: {out_json}")
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -20,7 +20,7 @@ jobs:
           activate-environment: ccad
           environment-file: environment.yml
           python-version: '3.11'
-          miniforge-variant: Mambaforge
+          miniforge-variant: Miniforge3
           use-mamba: true
 
       - name: Install pip requirements

@@ -28,12 +28,20 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Sanity check imports
+        shell: bash -l {0}
+        run: |
+          echo "PWD=$(pwd)"
+          ls -la
+          echo "PYTHONPATH=./code python - <<'PY'\nimport sys, pkgutil\nsys.path.insert(0, './code')\nprint('sys.path[0:3]=', sys.path[0:3])\nprint('eurekamesh loader:', pkgutil.find_loader('eurekamesh'))\nprint('domains loader:', pkgutil.find_loader('eurekamesh.domains'))\nimport eurekamesh, eurekamesh.domains.drug_discovery as dd\nprint('OK import', dd.SMILESCanonicalizer.__name__)\nPY" | bash
+
       - name: Run tests (MOCK_LLM)
         env:
           MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"
           MPLBACKEND: Agg
         shell: bash -l {0}
         run: |
+          export PYTHONPATH=$PWD/code
           make test
 
       - name: Run baseline (MOCK_LLM)

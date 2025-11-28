@@ -29,6 +29,7 @@ jobs:
       - name: Run tests (MOCK_LLM)
         env:
           MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"
+          MPLBACKEND: Agg
         shell: bash -l {0}
         run: |
           make test
@@ -36,6 +37,7 @@ jobs:
       - name: Build figures and report (MOCK_LLM)
         env:
           MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"
+          MPLBACKEND: Agg
         shell: bash -l {0}
         run: |
           make figs

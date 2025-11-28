@@ -33,7 +33,16 @@ jobs:
         run: |
           echo "PWD=$(pwd)"
           ls -la
-          echo "PYTHONPATH=./code python - <<'PY'\nimport sys, pkgutil\nsys.path.insert(0, './code')\nprint('sys.path[0:3]=', sys.path[0:3])\nprint('eurekamesh loader:', pkgutil.find_loader('eurekamesh'))\nprint('domains loader:', pkgutil.find_loader('eurekamesh.domains'))\nimport eurekamesh, eurekamesh.domains.drug_discovery as dd\nprint('OK import', dd.SMILESCanonicalizer.__name__)\nPY" | bash
+          export PYTHONPATH=./code
+          python - <<'PY'
+import sys, pkgutil
+sys.path.insert(0, './code')
+print('sys.path[0:3]=', sys.path[0:3])
+print('eurekamesh loader:', pkgutil.find_loader('eurekamesh'))
+print('domains loader:', pkgutil.find_loader('eurekamesh.domains'))
+import eurekamesh, eurekamesh.domains.drug_discovery as dd
+print('OK import', dd.SMILESCanonicalizer.__name__)
+PY
 
       - name: Run tests (MOCK_LLM)
         env:

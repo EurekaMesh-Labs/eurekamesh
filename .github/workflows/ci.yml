@@ -17,9 +17,11 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
-          activate-environment: eurekamesh-pub
+          activate-environment: ccad
           environment-file: environment.yml
-          python-version: '3.10'
+          python-version: '3.11'
+          miniforge-variant: Mambaforge
+          use-mamba: true
 
       - name: Install pip requirements
         shell: bash -l {0}

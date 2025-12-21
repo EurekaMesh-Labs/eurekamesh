@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "EurekaMesh CCAD: Cumulative Context Anti‑Duplication for LLM‑driven hypothesis generation"
+version: "0.1.0"
+date-released: "2025-12-21"
+authors:
+  - family-names: "Soliva"
+    given-names: "Marco"
+    affiliation: "EurekaMesh Labs"
+repository-code: "https://github.com/EurekaMesh-Labs/eurekamesh"
+license: "MIT"
+keywords:
+  - "LLM"
+  - "Drug discovery"
+  - "Generative design"
+  - "Retrieval-augmented generation"
+  - "Deduplication"
+abstract: >
+  EurekaMesh CCAD is a research-grade framework for steering large language
+  models towards novel, valid hypotheses by combining domain-specific
+  canonicalization, exact and fuzzy de-duplication (ECFP4/Tanimoto), and
+  adaptive context (recent uniques, RAG prototypes). The publish subset
+  provides a fully reproducible pipeline with tests, A/B/C experiments,
+  structured logging, figures, and an HTML report.
+
+

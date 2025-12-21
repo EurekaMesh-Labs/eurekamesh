@@ -2,6 +2,18 @@
 
 Minimal, reproducible subset for experiments and paper figures.
 
+## 3‑command quickstart (offline)
+
+Run the whole pipeline without any API keys:
+
+```bash
+pip install -e .
+export MOCK_LLM=$'CCO\nCCN\nC1=CC=CC=C1\nCC(=O)O\nCCO'
+make e2e   # runs tests + baseline + A/B/C + figures + HTML report
+```
+
+Open `report/index.html` to inspect results and figures.
+
 ## What is CCAD?
 
 CCAD (Cumulative Context Anti‑Duplication) is a modular approach to steer LLM generation towards maximising useful, non‑duplicated hypotheses under cost control. Core ideas:
@@ -112,6 +124,14 @@ make report
 - Reproducibilidad:
   - Seeds and config centralizados (`code/config.py`), override por variables de entorno.
   - CI ejecuta tests y genera report con `MOCK_LLM`.
+
+### Out of scope (v0.1.0)
+
+- Full benchmark harnesses (GuacaMol/MOSES) beyond provided placeholders.
+- Training or fine‑tuning generative models (LLM/RL) — this repo focuses on prompting and selection.
+- Large‑scale distributed orchestration; this is a single‑node, research‑grade reference.
+- GPU‑accelerated chemical similarity backends (current ECFP4/Tanimoto is CPU; pluggable).
+- Advanced medicinal chemistry metrics (FCD/SNN/IntDiv) are optional and not enabled by default.
 
 ## Benchmarks (placeholders)
 

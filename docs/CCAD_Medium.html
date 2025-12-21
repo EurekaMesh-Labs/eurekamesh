@@ -1,37 +1,41 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CCAD: +15–18% más hipótesis únicas por token para I+D con LLMs</title>
-  <meta name="description" content="CCAD (Cumulative Context Anti‑Duplication) mejora la eficiencia en generación con LLMs en ciencia (+15–18% UPT) mediante canonicalización, contexto anti‑duplicación, deduplicación exacta, fuzzy ECFP4/Tanimoto y RAG determinista. Guía práctica con quickstart en 3 comandos." />
+  <title>CCAD: +15–18% Unique‑per‑Token for LLM‑driven Hypothesis Generation</title>
+  <meta name="description" content="CCAD (Cumulative Context Anti‑Duplication) improves token efficiency for LLM‑driven science (+15–18% UPT) via canonicalization, cumulative anti‑dup context, exact and fuzzy dedup (ECFP4/Tanimoto), adaptive policy, and deterministic RAG. Includes a 3‑command quickstart." />
+  <meta property="og:title" content="CCAD: +15–18% Unique‑per‑Token for LLM‑driven Hypothesis Generation" />
+  <meta property="og:description" content="How CCAD reduces duplicate generation and increases UPT using canonicalization, anti‑dup context, exact+fuzzy dedup, and deterministic RAG. With a 3‑command quickstart." />
+  <meta property="og:type" content="article" />
+  <meta name="color-scheme" content="light dark" />
   <style>
     :root {
-      --bg: #ffffff;
-      --fg: #222;
-      --muted: #6b7280;
-      --accent: #3b82f6;
-      --code-bg: #0b1020;
-      --code-fg: #e5e7eb;
-      --card: #f8fafc;
+      --bg: #ffffff; --fg: #111827; --muted: #6b7280; --accent: #2563eb;
+      --code-bg: #0b1020; --code-fg: #e5e7eb; --card: #f8fafc; --border: #e5e7eb;
     }
-    html, body { margin: 0; padding: 0; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#0b0f1a; --fg:#e5e7eb; --muted:#9ca3af; --card:#0f1627; --border:#1f2937; --accent:#60a5fa; --code-bg:#0a0f1e; --code-fg:#e5e7eb; }
+    }
+    html, body { margin: 0; padding: 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
       background: var(--bg);
       color: var(--fg);
-      line-height: 1.6;
+      line-height: 1.7;
       font-size: 18px;
     }
     .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
-    h1 { font-size: 2.2rem; line-height: 1.2; margin: 0 0 0.75rem; }
+    h1 { font-size: 2.3rem; line-height: 1.2; margin: 0 0 0.75rem; letter-spacing: -0.02em; }
     h2 { font-size: 1.6rem; margin: 2rem 0 0.75rem; }
     h3 { font-size: 1.25rem; margin: 1.25rem 0 0.5rem; }
-    p { margin: 0.9rem 0; }
+    p { margin: 0.9rem 0; word-wrap: break-word; }
     .lead { color: var(--muted); font-size: 1.05rem; }
     .meta { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.25rem; }
-    .hero { background: var(--card); padding: 1rem; border-radius: 12px; }
-    .tag { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 999px; background: #eef2ff; color: #3730a3; margin-right: .5rem; font-size: 0.85rem; }
+    .hero { background: var(--card); padding: 1rem; border-radius: 12px; border: 1px solid var(--border); }
+    .tags { display:flex; flex-wrap: wrap; gap: .5rem; }
+    .tag { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 999px; background: #e0e7ff; color: #1e40af; font-size: 0.85rem; }
+    @media (prefers-color-scheme: dark) { .tag{ background:#1e293b; color:#93c5fd; } }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
     code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Ubuntu Mono", Consolas, "Liberation Mono", "Courier New", monospace; }
@@ -41,12 +45,12 @@
       padding: 1rem;
       border-radius: 8px;
       overflow: auto;
-      font-size: 0.9rem;
+      font-size: 0.9rem; border: 1px solid #11182733;
     }
-    .grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
     @media (min-width: 900px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
     figure { margin: 1rem 0; }
-    figure img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; }
+    figure img { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); background: #fff; }
     figure figcaption { font-size: 0.9rem; color: var(--muted); margin-top: 0.5rem; }
     .callout {
       border-left: 4px solid var(--accent);
@@ -55,120 +59,119 @@
       border-radius: 6px;
       margin: 1rem 0;
     }
+    @media (prefers-color-scheme: dark) { .callout{ background:#0f172a; } }
     ul { padding-left: 1.2rem; }
-    li { margin: 0.4rem 0; }
+    li { margin: 0.45rem 0; }
     .footer { margin-top: 2rem; font-size: 0.9rem; color: var(--muted); }
   </style>
 </head>
 <body>
   <div class="container">
     <header class="hero">
-      <h1>CCAD: +15–18% más hipótesis únicas por token para I+D con LLMs</h1>
-      <p class="lead">Cómo <strong>Cumulative Context Anti‑Duplication (CCAD)</strong> reduce duplicados en generación con LLMs mediante canonicalización, contexto anti‑dup acumulativo, deduplicación exacta, <em>fuzzy</em> químico (ECFP4/Tanimoto) y RAG determinista.</p>
-      <div class="meta">EurekaMesh Labs • v0.1.0 • Actualizado: 21 dic 2025 • <a href="https://github.com/EurekaMesh-Labs/eurekamesh" target="_blank" rel="noopener">Repositorio</a> • <a href="https://github.com/EurekaMesh-Labs/eurekamesh/releases/tag/v0.1.0" target="_blank" rel="noopener">Release</a></div>
-      <div>
-        <span class="tag">LLM</span>
-        <span class="tag">Drug Discovery</span>
-        <span class="tag">RAG</span>
-        <span class="tag">Cheminformática</span>
+      <h1>CCAD: +15–18% more Unique‑per‑Token for LLM‑driven hypothesis generation</h1>
+      <p class="lead">How <strong>Cumulative Context Anti‑Duplication (CCAD)</strong> reduces duplicate generation with canonicalization, cumulative anti‑dup context, exact + <em>fuzzy</em> dedup (ECFP4/Tanimoto), deterministic RAG, and adaptive policy.</p>
+      <div class="meta">EurekaMesh Labs • v0.1.0 • Updated: Dec 21, 2025 • <a href="https://github.com/EurekaMesh-Labs/eurekamesh" target="_blank" rel="noopener">Repository</a> • <a href="https://github.com/EurekaMesh-Labs/eurekamesh/releases/tag/v0.1.0" target="_blank" rel="noopener">Release</a></div>
+      <div class="tags">
+        <span class="tag">LLM</span><span class="tag">Drug Discovery</span><span class="tag">RAG</span><span class="tag">Cheminformatics</span>
       </div>
     </header>
 
     <section>
       <h2>TL;DR</h2>
       <ul>
-        <li><strong>Eficiencia</strong>: CCAD sube la UPT ≈ <strong>15–18% absolutos</strong> (p.ej., de 54.0% ± 8.7% a ~70–72%).</li>
-        <li><strong>Cómo lo logra</strong>: canonicalización (SMILES), <em>anti‑dup context</em> acumulativo, deduplicación exacta, <strong>fuzzy</strong> ECFP4/Tanimoto con políticas <code>reject|count|allow</code>, y RAG con <em>fallback</em> determinista.</li>
-        <li><strong>Calidad</strong>: 100% Lipinski y SA‑Score ≈3.3 en moléculas; 100% UPT en secuencias.</li>
-        <li><strong>3 comandos y listo</strong>: instala, simula con <code>MOCK_LLM</code> y genera informe HTML.</li>
+        <li><strong>Efficiency</strong>: CCAD increases UPT by <strong>≈15–18% absolute</strong> (e.g., 54.0% ± 8.7% → ~70–72%).</li>
+        <li><strong>How</strong>: SMILES canonicalization, cumulative <em>anti‑dup context</em>, exact dedup, <strong>fuzzy</strong> ECFP4/Tanimoto with <code>reject | count | allow</code>, plus deterministic RAG.</li>
+        <li><strong>Quality</strong>: 100% Lipinski; SA‑Score ≈3.3 for molecules; 100% UPT in sequences.</li>
+        <li><strong>3‑command quickstart</strong>: install, simulate via <code>MOCK_LLM</code>, produce an HTML report.</li>
       </ul>
       <div class="callout">
-        Whitepaper de referencia (detalle técnico, resultados y referencias): 
-        <a href="https://github.com/EurekaMesh-Labs/eurekamesh/blob/main/docs/CCAD_PAPER_DRAFT.md" target="_blank" rel="noopener">CCAD_PAPER_DRAFT.md</a>.
+        Reference whitepaper (technical details, results, and citations): 
+        <a href="https://github.com/EurekaMesh-Labs/eurekamesh/blob/main/docs/CCAD_PAPER_DRAFT.md" target="_blank" rel="noopener">CCAD_PAPER_DRAFT.md</a>
+        (<a href="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/docs/CCAD_PAPER_DRAFT.md" target="_blank" rel="noopener">raw</a>).
       </div>
     </section>
 
     <section>
-      <h2>¿Por qué importan los duplicados?</h2>
-      <p>En espacios combinatorios densos (p. ej., moléculas), los LLMs tienden a repetir estructuras o variantes notacionales. Cada duplicado es <em>token y coste desperdiciado</em>, ralentiza la exploración y reduce la cobertura de hipótesis.</p>
+      <h2>Why duplicates matter</h2>
+      <p>In dense combinatorial spaces (e.g., molecules), LLMs often repeat structures or notational variants. Every duplicate is <em>wasted tokens and cost</em>, reduces coverage, and slows exploration.</p>
     </section>
 
     <section>
-      <h2>Qué es CCAD</h2>
+      <h2>What CCAD is</h2>
       <ul>
-        <li><strong>Canonicalización</strong>: estandariza entidades (p. ej., SMILES con RDKit) para detectar equivalencias “CCO” ≡ “OCC”.</li>
-        <li><strong>Contexto anti‑dup acumulativo</strong>: inyecta los últimos <em>K</em> <code>canonical_history</code> para desalentar repeticiones.</li>
-        <li><strong>Deduplicación exacta</strong>: filtrado en tiempo real por forma canónica (O(1) con <code>set</code>).</li>
-        <li><strong>Fuzzy químico (opcional)</strong>: ECFP4/Tanimoto con políticas <code>reject | count | allow</code> y umbral típico 0.90–0.95.</li>
-        <li><strong>RAG determinista (opcional)</strong>: compresión de contexto vía prototipos (Sentence-BERT) con <em>fallback</em> de embeddings determinista (BLAKE2b + <code>np.random.default_rng</code>).</li>
-        <li><strong>Política adaptativa</strong>: ajusta <em>context size</em>, <code>fuzzy_threshold</code> y <code>temperature</code> según <code>dup_rate</code> y <code>valid_rate</code>.</li>
+        <li><strong>Canonicalization</strong>: standardizes items (e.g., SMILES via RDKit) to detect equivalences “CCO” ≡ “OCC”.</li>
+        <li><strong>Cumulative anti‑dup context</strong>: injects the latest <em>K</em> items from <code>canonical_history</code> to steer the LLM away from repetition.</li>
+        <li><strong>Exact dedup</strong>: real‑time filtering on canonical form (O(1) set lookup).</li>
+        <li><strong>Fuzzy chemical dedup (optional)</strong>: ECFP4/Tanimoto with <code>reject | count | allow</code> and typical threshold 0.90–0.95.</li>
+        <li><strong>Deterministic RAG (optional)</strong>: context compression with prototypes (Sentence‑BERT) and a deterministic embedding fallback (BLAKE2b + <code>np.random.default_rng</code>).</li>
+        <li><strong>Adaptive policy</strong>: adjusts <em>context size</em>, <code>fuzzy_threshold</code>, and <code>temperature</code> based on <code>dup_rate</code> and <code>valid_rate</code>.</li>
       </ul>
-      <p><strong>Modos A/B/C</strong>: <code>none</code> (sin contexto; con canonicalización+dedup), <code>basic</code> (últimos K), <code>rag</code> (prototipos). “none” <em>no</em> es el baseline crudo; el baseline crudo es la prueba naive fuera de CCAD.</p>
+      <p><strong>A/B/C modes</strong>: <code>none</code> (no context; still with canonicalization + dedup), <code>basic</code> (last K items), <code>rag</code> (prototypes). “none” is <em>not</em> the naive baseline; the naive baseline is outside CCAD.</p>
     </section>
 
     <section>
-      <h2>Resultados (resumen)</h2>
+      <h2>Results (summary)</h2>
       <div class="grid grid-2">
         <figure>
-          <img alt="UPT y duplicados por modo" src="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/figures/abtest_upt_dup.svg" />
-          <figcaption>UPT y tasa de duplicados por modo (none/basic/rag).</figcaption>
+          <img alt="UPT and duplicate rate per mode" src="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/figures/abtest_upt_dup.svg" />
+          <figcaption>UPT and duplicate rate per mode (none/basic/rag).</figcaption>
         </figure>
         <figure>
-          <img alt="UPT por corrida" src="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/figures/abtest_runs_upt.svg" />
-          <figcaption>Evolución de UPT por corrida y condición.</figcaption>
+          <img alt="UPT per run" src="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/figures/abtest_runs_upt.svg" />
+          <figcaption>UPT trend per run and condition.</figcaption>
         </figure>
       </div>
       <figure>
-        <img alt="Resumen de post-filtros" src="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/figures/post_filters_summary.svg" />
-        <figcaption>Calidad tras filtros: Lipinski y SA‑Score.</figcaption>
+        <img alt="Post-filters summary" src="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/figures/post_filters_summary.svg" />
+        <figcaption>Quality after filters: Lipinski and SA‑Score.</figcaption>
       </figure>
       <ul>
-        <li><strong>Moléculas (EGFR)</strong>: UPT ≈ 71.6–72.0%, Lipinski 100%, SA ≈ 3.36–3.54.</li>
-        <li><strong>Secuencias (enzimas)</strong>: UPT = 100% (espacio disperso), sin degradación.</li>
-        <li><strong>RAG</strong>: +0.4% UPT y 3–5× compresión de contexto (beneficio crece con N).</li>
+        <li><strong>Molecules (EGFR)</strong>: UPT ≈ 71.6–72.0%, Lipinski 100%, SA ≈ 3.36–3.54.</li>
+        <li><strong>Sequences (enzymes)</strong>: UPT = 100% (sparse space), no degradation.</li>
+        <li><strong>RAG</strong>: +0.4% UPT and 3–5× context compression (benefit grows with N).</li>
       </ul>
     </section>
 
     <section>
-      <h2>Quickstart (3 comandos, offline)</h2>
+      <h2>Quickstart (3 commands, offline)</h2>
       <pre><code>pip install -e .
 export MOCK_LLM=$'CCO\nCCN\nC1=CC=CC=C1\nCC(=O)O\nCCO'
-make e2e   # tests + baseline + A/B/C + figuras + reporte HTML</code></pre>
-      <p>Abre <code>report/index.html</code> para revisar métricas y gráficos. Para modo <em>live</em>, define <code>OPENAI_API_KEY</code> y ejecuta <code>make abtest</code>/<code>make report</code>.</p>
+make e2e   # tests + baseline + A/B/C + figures + HTML report</code></pre>
+      <p>Open <code>report/index.html</code> to inspect metrics and figures. For <em>live</em> mode, set <code>OPENAI_API_KEY</code> and run <code>make abtest</code> / <code>make report</code>.</p>
     </section>
 
     <section>
-      <h2>Reproducibilidad y observabilidad</h2>
+      <h2>Reproducibility and observability</h2>
       <ul>
-        <li><strong>Determinismo</strong>: <em>fallback</em> de embeddings determinista; seeds y configs por entorno.</li>
-        <li><strong>Logs estructurados</strong>: JSONL + CSV (UPT_raw/valid, dup_rate_raw/valid, tokens/coste).</li>
-        <li><strong>Reportes</strong>: figuras (PNG/SVG) y HTML; dashboard en Streamlit (<code>make dashboard</code>).</li>
-        <li><strong>CI</strong>: tests y reporte con <code>MOCK_LLM</code> en GitHub Actions.</li>
+        <li><strong>Determinism</strong>: deterministic embedding fallback; seeds and configs via environment.</li>
+        <li><strong>Structured logs</strong>: JSONL + CSV (UPT_raw/valid, dup_rate_raw/valid, tokens/cost).</li>
+        <li><strong>Reports</strong>: figures (PNG/SVG) and HTML; Streamlit dashboard (<code>make dashboard</code>).</li>
+        <li><strong>CI</strong>: tests and report with <code>MOCK_LLM</code> on GitHub Actions.</li>
       </ul>
     </section>
 
     <section>
-      <h2>Roadmap (siguiente)</h2>
+      <h2>Roadmap (next)</h2>
       <ul>
-        <li>Integración GuacaMol/MOSES (FCD, SNN, IntDiv) como paso opcional en <code>make report</code>.</li>
-        <li>Hardening de conectores LLM (retries, timeouts, rate limiting, caché).</li>
-        <li><em>Fuzzy</em> acelerado (ECFP4/Tanimoto batched / GPU) y FAISS para embeddings.</li>
-        <li>Registry de corridas (esquema JSONL v1) + browser en el dashboard.</li>
+        <li>GuacaMol/MOSES integration (FCD, SNN, IntDiv) as an optional step in <code>make report</code>.</li>
+        <li>LLM connector hardening (retries, timeouts, rate limiting, caching).</li>
+        <li>Accelerated <em>fuzzy</em> (batched/GPU) and FAISS for learned embeddings.</li>
+        <li>Run registry (JSONL v1 schema) + dashboard browser.</li>
       </ul>
-      <p>Consulta los issues abiertos: <a href="https://github.com/EurekaMesh-Labs/eurekamesh/issues" target="_blank" rel="noopener">EurekaMesh-Labs/eurekamesh • Issues</a>.</p>
+      <p>See open issues: <a href="https://github.com/EurekaMesh-Labs/eurekamesh/issues" target="_blank" rel="noopener">EurekaMesh-Labs/eurekamesh • Issues</a>.</p>
     </section>
 
     <section>
-      <h2>Empieza ahora</h2>
+      <h2>Get started</h2>
       <ul>
-        <li>Repo: <a href="https://github.com/EurekaMesh-Labs/eurekamesh" target="_blank" rel="noopener">github.com/EurekaMesh-Labs/eurekamesh</a></li>
+        <li>Repository: <a href="https://github.com/EurekaMesh-Labs/eurekamesh" target="_blank" rel="noopener">github.com/EurekaMesh-Labs/eurekamesh</a></li>
         <li>Whitepaper: <a href="https://github.com/EurekaMesh-Labs/eurekamesh/blob/main/docs/CCAD_PAPER_DRAFT.md" target="_blank" rel="noopener">CCAD_PAPER_DRAFT.md</a></li>
-        <li>Release v0.1.0: <a href="https://github.com/EurekaMesh-Labs/eurekamesh/releases/tag/v0.1.0" target="_blank" rel="noopener">notas de versión</a></li>
+        <li>Release v0.1.0: <a href="https://github.com/EurekaMesh-Labs/eurekamesh/releases/tag/v0.1.0" target="_blank" rel="noopener">release notes</a></li>
       </ul>
     </section>
 
     <footer class="footer">
-      © EurekaMesh Labs — CCAD es software open‑source (MIT). Si lo utilizas en investigación, por favor cita: 
+      © EurekaMesh Labs — CCAD is open‑source software (MIT). If you use it in research, please cite: 
       <a href="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/docs/CCAD_PAPER_DRAFT.md" target="_blank" rel="noopener">CCAD_PAPER_DRAFT.md</a>.
     </footer>
   </div>

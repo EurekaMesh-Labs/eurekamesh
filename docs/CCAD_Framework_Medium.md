@@ -85,10 +85,13 @@ The molecules adapter is just a reference; the same pattern applies to text, cod
 
 ## Mini demo (non‑chemical)
 
-Example with generic short strings:
+Example with generic short strings (2–3 inputs), showing UPT before/after:
 
 ```
-Input (LLM output):
+# Prompt (simplified)
+Generate 5 short items, one per line. No numbering.
+
+# Raw LLM output (example)
 apple
 banana
 orange
@@ -96,11 +99,18 @@ Apple   # notation variant → canonicalize lowercases
 banana  # exact dup
 apples  # near‑dup (token‑set similarity)
 
-CCAD:
+# Naive baseline (no canonicalization/context/dedup)
+# 5 generated, 3 unique → UPT_raw = 3/5 = 60%
+
+# CCAD (canon + context + exact/fuzzy)
+- canonicalize → lowercase
 - canonicalize → lowercase
 - exact dedup removes exact repetition (banana)
 - fuzzy dedup (threshold) suppresses "apple"/"apples" if too similar
 - anti‑dup memory shows recent uniques → LLM avoids repeats
+
+# After applying CCAD, the next chunk avoids repeats
+# 5 generated, 5 unique → UPT_raw ≈ 100% (toy example)
 ```
 
 Result: higher UPT with the same token budget.

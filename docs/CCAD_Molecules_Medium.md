@@ -1,23 +1,106 @@
 # CCAD for Molecular Generation (Reference Case Study)
 
-This article applies the general CCAD framework to small‑molecule generation. For the framework overview, see `CCAD_Framework_Medium.md`.
+This article shows how to apply the general CCAD framework to small‑molecule generation. For the framework overview, read `CCAD_Framework_Medium.md`. Here we focus on the “molecules adapter” and a practical pipeline that turns a raw LLM into a controllable generator of drug‑like SMILES with higher Unique‑per‑Token (UPT).
 
-## Pipeline
-1) Inputs: SMILES prompted to an LLM (baseline)  
-2) Canonicalization: RDKit converts SMILES to a canonical form  
-3) Exact dedup: rejects repeated canonical SMILES  
-4) Fuzzy chemical dedup: ECFP4/Tanimoto with policies `reject|count|allow`  
-5) Anti‑dup context: last K canonical uniques or RAG prototypes (Sentence‑BERT)  
-6) Verifier/filters: Lipinski, SA‑Score, optional PAINS  
-7) Adaptive policy: adjust K/threshold/temperature based on duplicate/validity rates  
-8) Report: JSONL/CSV logs, figures (UPT/dup), HTML summary
+---
+
+## What we measure
+
+- UPT (unique per token budget):  
+  `UPT_raw = unique_accepted / total_generated` and `UPT_valid = unique_accepted / total_valid_generated`.  
+  Interpretation: how much useful diversity you get for the same token budget.
+- Duplicate rates: `dup_rate_raw` and `dup_rate_valid`.
+- Quality metrics: basic drug‑likeness (Lipinski), synthetic accessibility (SA‑Score), optional PAINS.
+- Baselines: the “naive baseline” is outside CCAD (no canonicalization, no anti‑dup context, no real‑time dedup). The CCAD mode `none` is “no context” but still uses canonicalization + exact dedup.
+
+---
+
+## Pipeline (8 steps)
+
+1) Inputs (SMILES)  
+   A prompt asks the LLM to output one SMILES per line for a chosen target theme (e.g., kinase inhibitors).
+
+2) Canonicalization (RDKit)  
+   We convert each SMILES to its canonical form. “CCO” and “OCC” are the same molecule; canonicalization collapses notational variants and enables exact dedup.
+
+3) Exact dedup (hash set)  
+   If the canonical form has appeared before, reject it immediately (saves tokens if the loop feeds back).
+
+4) Fuzzy chemical dedup (ECFP4/Tanimoto)  
+   Optional semantic filter with policies `reject | count | allow` and thresholds in 0.90–0.95. Use `reject` to prevent close analogs, `count` to track them, or `allow` to disable fuzzy.
+
+5) Anti‑dup context (K recent or RAG prototypes)  
+   Build a compact “memory” of explored space: either the last K accepted canonical SMILES or cluster prototypes (Sentence‑BERT) when K gets large. Inject this into the next prompt so the LLM avoids repeats.
+
+6) Verifier/filters  
+   Domain checks: Lipinski Rule of Five, SA‑Score, optional PAINS catalog scan. These do not change UPT directly, but keep the accepted set high quality.
+
+7) Adaptive policy  
+   When `dup_rate` rises, increase K, switch fuzzy to `reject`, or lower its threshold; when `valid_rate` drops, lower temperature or enforce stricter parse/grammar. This keeps the run away from saturation.
+
+8) Reporting  
+   We log JSONL per chunk and aggregate to CSV. Figures (UPT and dup rates) plus an HTML report make it easy to compare conditions.
+
+---
+
+## Adapter: molecules
+
+The molecules adapter implements:
+
+- `canonicalize(smiles) -> str`: RDKit canonical SMILES.  
+- `signature(smiles) -> Any`: ECFP4 fingerprint.  
+- `similarity(a, b) -> float`: Tanimoto similarity in [0,1].  
+- `validate(smiles) -> dict|bool`: checks parse success + Lipinski/SA‑Score (and optional PAINS).  
+- `render_memory(exemplars) -> str`: produce a compact list of recent uniques (or prototypes) to inject in the prompt.
+
+This is a straightforward specialization of the general adapter interface and demonstrates how to “teach” CCAD a domain.
+
+---
+
+## Failure modes (and how CCAD helps)
+
+- Notational variants: multiple strings encode the same molecule. Canonicalization collapses them.  
+- Near‑duplicates: close analogs (e.g., halogen swaps) saturate exploration. Fuzzy (ECFP4/Tanimoto) rejects or counts them.  
+- Attention limits: a long history won’t fit in context. RAG prototypes compress explored regions with little loss.  
+- Validity tradeoffs: very strict filters can hurt generation. Adaptive policy lowers temperature or softens context accordingly.
+
+---
 
 ## Results (illustrative)
-- UPT ≈ 71.6–72.0% on EGFR‑like prompts (preliminary n=3)  
-- 100% Lipinski pass; SA‑Score ≈ 3.36–3.54  
-- RAG adds +0.4% UPT and 3–5× context compression (benefit increases with N)
+
+- UPT ≈ 71.6–72.0% on EGFR‑like prompts (preliminary, n=3).  
+- Lipinski 100%; SA‑Score ≈ 3.36–3.54.  
+- RAG adds ~+0.4% UPT and 3–5× context compression (benefit grows with N).
+
+Main figure (reproducible from the repo):
+
+![UPT vs dup rate by mode](figures/abtest_upt_dup.svg)
+
+Per‑run UPT trend:
+
+![UPT per run](figures/abtest_runs_upt.svg)
+
+Filters summary:
+
+![Filters summary](figures/post_filters_summary.svg)
+
+---
+
+## Small table (baseline vs CCAD modes)
+
+| Condition | UPT (raw) | Dup rate (raw) | Notes |
+|---|---:|---:|---|
+| Naive baseline (outside CCAD) | 54.0% ± 8.7% | — | n=3 (preliminary) |
+| CCAD none (no context) | ~71.6% | ~21.7% | canonicalization + exact dedup |
+| CCAD basic (recent K) | ~71.6–71.8% | ~21% | guidance from recent uniques |
+| CCAD rag (prototypes) | ~72.0% | ~21.2% | compressed memory; modest gain |
+
+Numbers are indicative in this setup; run the repo to regenerate for your configuration.
+
+---
 
 ## Quickstart (offline)
+
 ```bash
 pip install -e .
 export MOCK_LLM=$'CCO\nCCN\nc1ccccc1\nCC(=O)O\nCCO'
@@ -25,11 +108,19 @@ make e2e
 open report/index.html
 ```
 
-## Notes
-- Fuzzy thresholds typically 0.90–0.95; tune per domain.  
-- Deterministic embedding fallback used in CI; enable Sentence‑BERT for live RAG.
+---
+
+## Reproducibility notes
+
+- Use `MOCK_LLM` for smoke tests and CI; enable Sentence‑BERT for live RAG.  
+- Deterministic embedding fallback ensures reproducibility when embeddings are unavailable.  
+- Figures and HTML report are generated by the provided scripts and make targets.
+
+---
 
 ## CTA
-Have a domain of interest (materials/proteins/sequences)? Open an issue with ~10 sample outputs to build an adapter.
+
+Want to apply CCAD to another domain (materials, proteins, text/code)? Open an issue with ~10 example outputs; we’ll guide you to implement a domain adapter and reproduce these plots.
+
 
 

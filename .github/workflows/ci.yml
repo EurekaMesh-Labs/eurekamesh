@@ -70,6 +70,7 @@ jobs:
         run: |
           make figs
           make report
+          python scripts/make_figures.py
 
       - name: Upload report artifact
         uses: actions/upload-artifact@v4

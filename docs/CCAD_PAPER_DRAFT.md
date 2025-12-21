@@ -442,6 +442,17 @@ CCAD is practical for N ≤ 10,000 without optimization. For larger N, batch pro
 
 ---
 
+## 5.1 Additional Baseline: Post‑hoc Deduplication Only
+
+We include a simple baseline that generates a batch and performs exact post‑hoc deduplication at the end (no anti‑dup context, no adaptive policy, no fuzzy):
+
+- Runner: `code/experiments/baseline_posthoc_dedup.py`  
+- Metrics reported: `upt_raw`, `upt_valid`, `dup_rate_raw`, `dup_rate_valid`, tokens/cost
+
+This isolates the effect of early, in‑loop guidance vs late filtering. In practice we observe that post‑hoc dedup improves results over naive prompting, but falls short of CCAD due to wasted tokens spent generating duplicates.
+
+---
+
 ## 5. RESULTS
 
 ### 5.1 Token Efficiency Improvement

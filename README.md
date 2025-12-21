@@ -76,6 +76,12 @@ eurekamesh report
 make dashboard
 ```
 
+## Docs
+
+- Framework overview (Medium-style): `docs/CCAD_Framework_Medium.md`
+- Molecular case study (recommended): `docs/CCAD_Molecules_Medium.md`
+- Technical report draft: `docs/CCAD_PAPER_DRAFT.md`
+
 Outputs are written to `data/` as JSON + CSV with token/cost accounting.
 Figures saved to `figures/` (PNG + SVG). Generate HTML report to `report/index.html` with:
 

@@ -8,7 +8,7 @@
 
 ## ABSTRACT
 
-Large Language Models (LLMs) have emerged as powerful tools for hypothesis generation in scientific domains, but suffer from inefficiency due to generating duplicate or near-duplicate outputs. We introduce **Cumulative Context Anti-Duplication (CCAD)**, a modular framework that improves token efficiency in LLM-based hypothesis generation by ~18% absolute (from an experimentally measured **54.0% ± 8.7%** naive baseline to **~72%**) through: (1) domain-specific canonicalization, (2) cumulative anti-duplication context injection, (3) real-time exact deduplication, and (4) optional retrieval-augmented generation (RAG) with semantic prototypes. We validate CCAD in two distinct combinatorial spaces—drug discovery (molecular structures) and synthetic biology (protein sequences)—demonstrating consistent performance. In drug discovery, CCAD achieves 72.0% token efficiency (unique items per total generated) with 100% Lipinski compliance and average synthetic accessibility score of 3.36, while maintaining 100% efficiency in the sparser protein sequence space. Ablation studies reveal that canonicalization and context guidance contribute the majority of improvements, with exact deduplication providing robustness and RAG enhancements adding incremental gains. We release CCAD as an open-source framework with domain adapters for drug discovery and synthetic biology, with preliminary support for materials science, enabling researchers to efficiently explore molecular and sequence spaces.
+Large Language Models (LLMs) have emerged as powerful tools for hypothesis generation in scientific domains, but suffer from inefficiency due to generating duplicate or near-duplicate outputs. We introduce **Cumulative Context Anti-Duplication (CCAD)**, a modular framework that improves token efficiency in LLM-based hypothesis generation by **≈15–18% absolute** (from an experimentally measured **54.0% ± 8.7%** naive baseline to **~70–72%**) through: (1) domain-specific canonicalization, (2) cumulative anti-duplication context injection, (3) real-time exact deduplication, and (4) optional retrieval-augmented generation (RAG) with semantic prototypes. We validate CCAD in two distinct combinatorial spaces—drug discovery (molecular structures) and synthetic biology (protein sequences)—demonstrating consistent performance. In drug discovery, CCAD achieves ~72% token efficiency (unique items per total generated) with 100% Lipinski compliance and average synthetic accessibility score of 3.36, while maintaining 100% efficiency in the sparser protein sequence space. Ablation studies reveal that canonicalization and context guidance contribute the majority of improvements, with exact deduplication providing robustness and RAG enhancements adding incremental gains. We release CCAD as an open-source framework with domain adapters for drug discovery and synthetic biology, with preliminary support for materials science, enabling researchers to efficiently explore molecular and sequence spaces.
 
 **Significance Statement:** This work addresses a critical inefficiency in LLM-based scientific discovery: the generation of duplicate hypotheses that waste computational resources. Our CCAD framework provides a general, modular solution that improves token efficiency by 15% in validated domains (molecular and sequence spaces), making LLM-powered exploration more cost-effective and scalable.
 
@@ -44,10 +44,10 @@ We introduce **Cumulative Context Anti-Duplication (CCAD)**, a framework that:
 1. **Canonicalizes** domain-specific representations to detect notational variants
 2. **Injects cumulative anti-duplication context** showing recently generated items to guide the LLM away from repetition
 3. **Performs real-time exact deduplication** using hash-based canonicalized tracking
-4. **Optionally employs RAG** with semantic clustering to compress context and detect near-duplicates
+4. **Optionally employs RAG** with semantic clustering to compress context and detect near-duplicates (with deterministic fallback embeddings)
 
 Through systematic validation, we demonstrate:
-- **~18% absolute improvement** in token efficiency (from an experimentally measured 54.0% ± 8.7% naive baseline to ~72% CCAD; consistent with a ~57% historical baseline estimate)
+- **≈15–18% absolute improvement** in token efficiency (from an experimentally measured 54.0% ± 8.7% naive baseline to ~70–72% CCAD)
 - **Consistent performance** in two distinct combinatorial spaces: molecular (SMILES) and sequence (protein)
 - **Quantified contributions** of each component via ablation study (components estimated; see Limitations)
 - **Scalability** to 10,000+ items with sub-linear memory growth
@@ -140,7 +140,7 @@ For protein sequences, canonicalization is string normalization (uppercase, whit
 
 **Component 2: Cumulative Anti-Duplication Context**
 
-We maintain a set S of all canonicalized items generated so far. Before each LLM call, we inject context:
+We maintain an ordered history `canonical_history` of accepted canonical items and a set S for O(1) lookup. Before each LLM call, we inject context built from the most recent K items in `canonical_history`:
 
 ```
 ⚠️ ANTI-DUPLICATION REQUIREMENT:
@@ -169,12 +169,14 @@ This ensures S contains only unique canonical forms, with O(1) lookup.
 
 **Component 4: Adaptive Iteration Control**
 
-We track duplicate rate per chunk:
+We track duplicate rates per chunk (raw and valid-filtered) and adjust generation parameters:
 ```
 dup_rate = (duplicates in chunk) / (total in chunk)
 ```
 
-If `dup_rate > 0.7` for 3 consecutive chunks, we trigger early stopping (saturation detected). If `dup_rate > 0.6`, we increase temperature by 0.1 to encourage diversity.
+- If `dup_rate > 0.6`, we increase `max_context_items`, optionally switch `fuzzy_policy` to `reject`, and decrease `fuzzy_threshold` (e.g., 0.95 → 0.90).
+- If `valid_rate < 0.5`, we decrease temperature and may reduce context to improve validity.
+- If `dup_rate > 0.7` for 3 consecutive chunks, we trigger early stopping (saturation).
 
 #### 3.2.2 Optional RAG Enhancement (Supplementary S2)
 
@@ -186,7 +188,7 @@ For large-scale generation (N > 500), showing all items in context becomes impra
 3. Select cluster centroids as "prototypes" representing explored regions
 4. Show prototypes to LLM (e.g., "Region 1: CCO (cluster of 23 alcohols)")
 
-This provides a compressed, semantic view of explored space, guiding the LLM toward unexplored regions.
+This provides a compressed, semantic view of explored space, guiding the LLM toward unexplored regions. To ensure reproducibility when embeddings are unavailable or for CI, we use a deterministic fallback embedding function (BLAKE2b-based seeding + `np.random.default_rng`) to avoid non-deterministic `hash()` behavior.
 
 **Impact:** RAG adds +0.4% UPT improvement (71.6% → 72.0%) with 3-5x context compression. The gain is modest for N=500 but expected to increase for N > 1000. Full implementation details, pseudocode, and scalability analysis in Supplementary S2.
 
@@ -287,8 +289,10 @@ Code available at: [GitHub URL]
 **LLM:** GPT-4o (temperature 0.8, max_tokens 2000)
 
 **Metrics:**
-- **Token Efficiency (UPT):** unique_accepted / total_generated
-- **Duplicate Rate:** duplicates_filtered / total_generated
+- **Token Efficiency (UPT_raw):** unique_accepted / total_generated (raw)
+- **Token Efficiency (UPT_valid):** unique_accepted / total_valid_generated
+- **Duplicate Rate (valid):** duplicates_filtered / total_valid_generated
+- **Duplicate Rate (raw):** duplicates_filtered / total_generated
 - **Quality Metrics:** Lipinski pass rate, SA-Score (drug discovery); composition score (synbio)
 
 **Hardware:** Macbook Pro M3, 32GB RAM (adequate for embeddings/clustering)
@@ -326,7 +330,7 @@ Output ONLY a JSON array of SMILES strings.
 Values reported as mean ± std where applicable (n=3 for naive baseline).
 
 **Key Findings:**
-- CCAD improves UPT by +14.6% absolute vs naive baseline
+- CCAD improves UPT by +15–18% absolute vs naive baseline (depending on baseline estimate)
 - RAG enhancement adds +0.4% UPT via compressed context
 - 100% Lipinski compliance indicates high-quality filtering
 - SA-Score 3.36-3.54 suggests good synthetic accessibility (< 4 is excellent)
@@ -381,7 +385,7 @@ To quantify each component's contribution, we perform ablation analysis:
 | + Anti-dup context (50) | 68.0%* | 26.0%* | +5.5% | Guide LLM away from seen |
 | + Exact hash dedup | **71.6%** | **21.7%** | +3.6% | Real-time filtering (CCAD) |
 | + RAG cluster prototypes | 71.8%* | 21.4%* | +0.2% | Compressed context |
-| + Fuzzy advisory | **72.0%** | **21.2%** | +0.2% | Semantic diversity |
+| + Fuzzy (ECFP4/Tanimoto; policy=count) | **72.0%** | **21.2%** | +0.2% | Semantic diversity |
 
 Baseline reported as mean ± std (n=3). Rows marked with * are estimated; bold rows are experimentally validated.
 
@@ -540,7 +544,7 @@ Future work should evaluate CCAD's effectiveness when applied to domain-specific
 
 We introduced CCAD, a modular framework for efficient LLM-based hypothesis generation in large combinatorial spaces. Through systematic validation in drug discovery and synthetic biology, we demonstrate:
 
-- **15% absolute improvement in token efficiency** (57% → 72% UPT) over naive prompting
+- **≈15–18% absolute improvement in token efficiency** (e.g., 54.0% ± 8.7% → ~70–72% UPT) over naive prompting
 - **Quantified contributions** of each component: canonicalization (+5.5%), anti-dup context (+5.5%), exact dedup (+3.6%), RAG (+0.4%)
 - **Consistent performance** in two distinct combinatorial spaces: molecular (SMILES, 71.6% UPT) and sequence (protein, 100% UPT)
 - **Maintained quality** (100% Lipinski compliance, SA-Score 3.36) despite efficiency focus
@@ -676,7 +680,7 @@ REQUIREMENT: Generate items in UNEXPLORED regions (far from all prototypes).
 **Limitations:**
 - Embedding overhead: ~100ms per 50 items (Sentence-BERT inference)
 - Similarity threshold tuning: 0.92 works for molecules, may vary by domain
-- Advisory-only fuzzy dedup: Does not reject near-duplicates (logs warning instead)
+- Fuzzy dedup policy selection: We expose `reject | count | allow` with ECFP4/Tanimoto; thresholds 0.90–0.95 work well for molecules and may vary by domain.
 
 ### S3. Algorithm Pseudocode
 

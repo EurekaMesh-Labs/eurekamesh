@@ -94,6 +94,7 @@
         <a href="https://github.com/EurekaMesh-Labs/eurekamesh/blob/main/docs/CCAD_PAPER_DRAFT.md" target="_blank" rel="noopener">CCAD_PAPER_DRAFT.md</a>
         (<a href="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/docs/CCAD_PAPER_DRAFT.md" target="_blank" rel="noopener">raw</a>).
       </div>
+      <p style="margin-top:.75rem;"><strong>Hook</strong>: Duplicate outputs = wasted tokens. CCAD turns duplication into a controllable signal.</p>
     </section>
 
     <section>
@@ -116,6 +117,11 @@ CCCl
 # Naive baseline → 10 generated, 6 unique → UPT 60%
 # CCAD (canon + context + exact/fuzzy) → avoids repeats → UPT ~72%</code></pre>
       <p><strong>Baseline (clarified)</strong>: prompt with <em>no</em> canonicalization, <em>no</em> anti‑dup context, and <em>no</em> real‑time filters/dedup.</p>
+    </section>
+
+    <section>
+      <h2>What is UPT?</h2>
+      <p><strong>Unique‑per‑Token (UPT)</strong> is the fraction of generated items that are unique at the canonical level: <code>UPT = unique_accepted / total_generated</code>. We also report <code>UPT_valid</code> when considering only valid items in the denominator.</p>
     </section>
 
     <section>
@@ -200,6 +206,7 @@ make e2e   # tests + baseline + A/B/C + figures + HTML report</code></pre>
     <footer class="footer">
       © EurekaMesh Labs — CCAD is open‑source software (MIT). If you use it in research, please cite: 
       <a href="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/docs/CCAD_PAPER_DRAFT.md" target="_blank" rel="noopener">CCAD_PAPER_DRAFT.md</a>.
+      <br />Want to build a domain adapter? <strong><a href="https://github.com/EurekaMesh-Labs/eurekamesh/issues/new" target="_blank" rel="noopener">Open an issue with your domain and a sample output</a></strong>.
     </footer>
   </div>
 </body>

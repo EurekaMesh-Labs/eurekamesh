@@ -1,6 +1,7 @@
 # CCAD: Cumulative Context Anti-Duplication for Efficient LLM-Based Hypothesis Generation
 
-**Authors:** Marco Soliva (EurekaMesh Labs)
+**Authors:** Marco Soliva (EurekaMesh Labs)  
+**Correspondence:** via GitHub Issues — https://github.com/EurekaMesh-Labs/eurekamesh/issues
 
 **Keywords:** Large Language Models, Hypothesis Generation, Drug Discovery, Synthetic Biology, Token Efficiency, Retrieval-Augmented Generation
 
@@ -303,7 +304,7 @@ Code available at: [GitHub URL]
 1. **Drug Discovery:** EGFR kinase inhibitors (molecular space)
 2. **Synthetic Biology:** Thermostable enzyme variants (sequence space)
 
-**Baseline:** Naive prompting without CCAD (raw LLM; n=3; UPT 54.0% ± 8.7%)
+**Baseline:** Naive prompting without CCAD (raw LLM; n=3; UPT 54.0% ± 8.7%) — preliminary
   
 Baseline definition (clarified): prompt with no canonicalization, no anti‑duplication context, and no real‑time filtering/deduplication.
 
@@ -502,11 +503,11 @@ Trade-off: +15% time overhead (10.8 min → 12.4 min for 500 molecules) due to e
 
 CCAD's effectiveness stems from addressing all three sources of duplication:
 
-1. **Notational variants** (e.g., "CCO" vs "OCC"): Solved by domain-specific canonicalization (+5.5% UPT)
-2. **LLM attention limits**: Mitigated by explicit anti-dup context (+5.5% UPT)
-3. **Stochastic sampling**: Filtered by real-time exact deduplication (+3.6% UPT)
+1. **Notational variants** (e.g., "CCO" vs "OCC"): addressed by domain-specific canonicalization.
+2. **LLM attention limits**: mitigated by explicit anti‑dup context.
+3. **Stochastic sampling**: filtered by real‑time exact deduplication.
 
-The cumulative effect (+15% UPT) exceeds the sum of individual ablations, suggesting synergistic interaction—e.g., canonicalization makes anti-dup context more effective by providing consistent notation.
+The cumulative effect (≈15–18% UPT gain in our setup) suggests synergistic interaction—e.g., canonicalization makes anti‑dup context more effective by providing consistent notation. We avoid reporting per‑component Δ values unless experimentally measured.
 
 ### 6.2 Comparison to Alternatives
 
@@ -543,7 +544,7 @@ Future work should evaluate CCAD's effectiveness when applied to domain-specific
 
 6. **Single-LLM evaluation:** We primarily test GPT-4o. Performance with other LLMs (Claude, Llama, Mistral) may vary.
 
-7. **Baseline and ablation validation:** The naive baseline is now experimentally validated (**54.0% ± 8.7% UPT, n=3**). Component-level ablation contributions remain **estimated** (canonicalization, anti-dup context, exact dedup), with feasibility evidence provided in **Supplementary S1**. A full experimental ablation series is left as future work.
+7. **Baseline and ablation validation:** The naive baseline is experimentally validated (**54.0% ± 8.7% UPT, n=3**; preliminary). Component-level ablation contributions are **not** reported numerically unless measured; a full experimental ablation series is left as future work.
 
 ### 6.4 Future Work
 
@@ -565,8 +566,8 @@ Future work should evaluate CCAD's effectiveness when applied to domain-specific
 
 We introduced CCAD, a modular framework for efficient LLM-based hypothesis generation in large combinatorial spaces. Through systematic validation in drug discovery and synthetic biology, we demonstrate:
 
-- **≈15–18% absolute improvement in token efficiency** (e.g., 54.0% ± 8.7% → ~70–72% UPT) over naive prompting
-- **Quantified contributions** of each component: canonicalization (+5.5%), anti-dup context (+5.5%), exact dedup (+3.6%), RAG (+0.4%)
+- **≈15–18% absolute improvement in token efficiency** (e.g., 54.0% ± 8.7% → ~70–72% UPT) over naive prompting (preliminary n=3)
+- **Component roles (qualitative)**: canonicalization (notation unification), anti‑dup context (guidance), exact dedup (robustness), RAG prototypes (compression), optional fuzzy (semantic diversity)
 - **Consistent performance** in two distinct combinatorial spaces: molecular (SMILES, 71.6% UPT) and sequence (protein, 100% UPT)
 - **Maintained quality** (100% Lipinski compliance, SA-Score 3.36) despite efficiency focus
 

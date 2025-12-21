@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eurekamesh"
+version = "0.1.0"
+description = "EurekaMesh CCAD – Reproducible anti-dup framework and experiments"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "EurekaMesh Labs" }]
+license = { text = "MIT" }
+dependencies = [
+  "numpy",
+  "matplotlib",
+  "aiohttp",
+  "streamlit",
+  "pandas"
+]
+
+[project.scripts]
+eurekamesh = "eurekamesh.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "code"}
+
+[tool.setuptools.packages.find]
+where = ["code"]
+include = ["eurekamesh*","experiments*"]
+exclude = []
+
+
+

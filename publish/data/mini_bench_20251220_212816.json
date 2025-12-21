@@ -1,0 +1,715 @@
+{
+  "runs": [
+    {
+      "seed": 1,
+      "mode": "none",
+      "n_target": 60,
+      "metrics": {
+        "total_generated": 36,
+        "total_raw_generated": 36,
+        "total_valid_generated": 36,
+        "unique_accepted": 6,
+        "duplicates_filtered": 30,
+        "chunks_processed": 6,
+        "duplicate_rates": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "duplicate_rates_raw": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "chunk_history": [
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 6,
+            "duplicates": 0,
+            "dup_rate": 0.0,
+            "dup_rate_raw": 0.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "seed": 1,
+      "mode": "basic",
+      "n_target": 60,
+      "metrics": {
+        "total_generated": 36,
+        "total_raw_generated": 36,
+        "total_valid_generated": 36,
+        "unique_accepted": 6,
+        "duplicates_filtered": 30,
+        "chunks_processed": 6,
+        "duplicate_rates": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "duplicate_rates_raw": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "chunk_history": [
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 6,
+            "duplicates": 0,
+            "dup_rate": 0.0,
+            "dup_rate_raw": 0.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "seed": 1,
+      "mode": "rag",
+      "n_target": 60,
+      "metrics": {
+        "total_generated": 36,
+        "total_raw_generated": 36,
+        "total_valid_generated": 36,
+        "unique_accepted": 6,
+        "duplicates_filtered": 30,
+        "chunks_processed": 6,
+        "duplicate_rates": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "duplicate_rates_raw": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "chunk_history": [
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 6,
+            "duplicates": 0,
+            "dup_rate": 0.0,
+            "dup_rate_raw": 0.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "seed": 2,
+      "mode": "none",
+      "n_target": 60,
+      "metrics": {
+        "total_generated": 36,
+        "total_raw_generated": 36,
+        "total_valid_generated": 36,
+        "unique_accepted": 6,
+        "duplicates_filtered": 30,
+        "chunks_processed": 6,
+        "duplicate_rates": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "duplicate_rates_raw": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "chunk_history": [
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 6,
+            "duplicates": 0,
+            "dup_rate": 0.0,
+            "dup_rate_raw": 0.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "seed": 2,
+      "mode": "basic",
+      "n_target": 60,
+      "metrics": {
+        "total_generated": 36,
+        "total_raw_generated": 36,
+        "total_valid_generated": 36,
+        "unique_accepted": 6,
+        "duplicates_filtered": 30,
+        "chunks_processed": 6,
+        "duplicate_rates": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "duplicate_rates_raw": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "chunk_history": [
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 6,
+            "duplicates": 0,
+            "dup_rate": 0.0,
+            "dup_rate_raw": 0.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "seed": 2,
+      "mode": "rag",
+      "n_target": 60,
+      "metrics": {
+        "total_generated": 36,
+        "total_raw_generated": 36,
+        "total_valid_generated": 36,
+        "unique_accepted": 6,
+        "duplicates_filtered": 30,
+        "chunks_processed": 6,
+        "duplicate_rates": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "duplicate_rates_raw": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "chunk_history": [
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 6,
+            "duplicates": 0,
+            "dup_rate": 0.0,
+            "dup_rate_raw": 0.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "seed": 3,
+      "mode": "none",
+      "n_target": 60,
+      "metrics": {
+        "total_generated": 36,
+        "total_raw_generated": 36,
+        "total_valid_generated": 36,
+        "unique_accepted": 6,
+        "duplicates_filtered": 30,
+        "chunks_processed": 6,
+        "duplicate_rates": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "duplicate_rates_raw": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "chunk_history": [
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 6,
+            "duplicates": 0,
+            "dup_rate": 0.0,
+            "dup_rate_raw": 0.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "seed": 3,
+      "mode": "basic",
+      "n_target": 60,
+      "metrics": {
+        "total_generated": 36,
+        "total_raw_generated": 36,
+        "total_valid_generated": 36,
+        "unique_accepted": 6,
+        "duplicates_filtered": 30,
+        "chunks_processed": 6,
+        "duplicate_rates": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "duplicate_rates_raw": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "chunk_history": [
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 6,
+            "duplicates": 0,
+            "dup_rate": 0.0,
+            "dup_rate_raw": 0.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          }
+        ]
+      }
+    },
+    {
+      "seed": 3,
+      "mode": "rag",
+      "n_target": 60,
+      "metrics": {
+        "total_generated": 36,
+        "total_raw_generated": 36,
+        "total_valid_generated": 36,
+        "unique_accepted": 6,
+        "duplicates_filtered": 30,
+        "chunks_processed": 6,
+        "duplicate_rates": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "duplicate_rates_raw": [
+          0.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "chunk_history": [
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 6,
+            "duplicates": 0,
+            "dup_rate": 0.0,
+            "dup_rate_raw": 0.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          },
+          {
+            "raw_generated": 6,
+            "valid_generated": 6,
+            "unique": 0,
+            "duplicates": 6,
+            "dup_rate": 1.0,
+            "dup_rate_raw": 1.0
+          }
+        ]
+      }
+    }
+  ]
+}

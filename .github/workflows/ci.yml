@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: ccad
+          environment-file: environment.yml
+          python-version: '3.11'
+          miniforge-variant: Miniforge3
+          use-mamba: true
+
+      - name: Install pip requirements
+        shell: bash -l {0}
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run tests (MOCK_LLM)
+        env:
+          MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"
+          MPLBACKEND: Agg
+        shell: bash -l {0}
+        run: |
+          PYTHONPATH=$PWD/code make test
+
+      - name: Run baseline (MOCK_LLM)
+        env:
+          MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"
+          MPLBACKEND: Agg
+        shell: bash -l {0}
+        run: |
+          make baseline
+
+      - name: Run A/B/C (MOCK_LLM, quick)
+        env:
+          MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"
+          RUNS: "1"
+          TARGET: "60"
+          MPLBACKEND: Agg
+        shell: bash -l {0}
+        run: |
+          make abtest
+
+      - name: Mini-benchmark (MOCK_LLM)
+        env:
+          MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"
+          MPLBACKEND: Agg
+        shell: bash -l {0}
+        run: |
+          make mini-bench
+
+      - name: Build figures and report (MOCK_LLM)
+        env:
+          MOCK_LLM: "CCO\nCCN\nO=C(O)C1=CC=CC=C1\nC1CCCCC1\nC1=CC=CC=C1\nCC(=O)O"
+          MPLBACKEND: Agg
+        shell: bash -l {0}
+        run: |
+          make figs
+          make report
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: report
+          path: report/
+

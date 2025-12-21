@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CCAD: +15–18% Unique‑per‑Token for LLM‑driven Hypothesis Generation</title>
-  <meta name="description" content="CCAD (Cumulative Context Anti‑Duplication) improves token efficiency for LLM‑driven science (+15–18% UPT) via canonicalization, cumulative anti‑dup context, exact and fuzzy dedup (ECFP4/Tanimoto), adaptive policy, and deterministic RAG. Includes a 3‑command quickstart." />
-  <meta property="og:title" content="CCAD: +15–18% Unique‑per‑Token for LLM‑driven Hypothesis Generation" />
+  <title>Stop Wasting Tokens: CCAD boosts unique generation by +18 points (54%→72%)</title>
+  <meta name="description" content="CCAD (Cumulative Context Anti‑Duplication) improves token efficiency for LLM‑driven science (+15–18% UPT) via canonicalization, cumulative anti‑dup context, exact and fuzzy dedup (ECFP4/Tanimoto), adaptive policy, and deterministic RAG. 3‑command quickstart included." />
+  <meta property="og:title" content="Stop Wasting Tokens: CCAD boosts unique generation by +18 points (54%→72%)" />
   <meta property="og:description" content="How CCAD reduces duplicate generation and increases UPT using canonicalization, anti‑dup context, exact+fuzzy dedup, and deterministic RAG. With a 3‑command quickstart." />
   <meta property="og:type" content="article" />
   <meta name="color-scheme" content="light dark" />
@@ -68,18 +68,23 @@
 <body>
   <div class="container">
     <header class="hero">
-      <h1>CCAD: +15–18% more Unique‑per‑Token for LLM‑driven hypothesis generation</h1>
+      <h1>Stop Wasting Tokens: CCAD boosts unique generation by +18 points (54%→72%)</h1>
       <p class="lead">How <strong>Cumulative Context Anti‑Duplication (CCAD)</strong> reduces duplicate generation with canonicalization, cumulative anti‑dup context, exact + <em>fuzzy</em> dedup (ECFP4/Tanimoto), deterministic RAG, and adaptive policy.</p>
       <div class="meta">EurekaMesh Labs • v0.1.0 • Updated: Dec 21, 2025 • <a href="https://github.com/EurekaMesh-Labs/eurekamesh" target="_blank" rel="noopener">Repository</a> • <a href="https://github.com/EurekaMesh-Labs/eurekamesh/releases/tag/v0.1.0" target="_blank" rel="noopener">Release</a></div>
       <div class="tags">
         <span class="tag">LLM</span><span class="tag">Drug Discovery</span><span class="tag">RAG</span><span class="tag">Cheminformatics</span>
       </div>
+      <figure style="margin-top:1rem;">
+        <img alt="UPT and duplicate rate per mode" src="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/figures/abtest_upt_dup.svg" />
+        <figcaption>Headline result: UPT improvement with CCAD across modes (none/basic/rag).</figcaption>
+      </figure>
     </header>
 
     <section>
       <h2>TL;DR</h2>
       <ul>
         <li><strong>Efficiency</strong>: CCAD increases UPT by <strong>≈15–18% absolute</strong> (e.g., 54.0% ± 8.7% → ~70–72%).</li>
+        <li><strong>Translation</strong>: +18 points absolute ≈ <strong>~33% relative</strong> efficiency gain (72/54 ≈ 1.33).</li>
         <li><strong>How</strong>: SMILES canonicalization, cumulative <em>anti‑dup context</em>, exact dedup, <strong>fuzzy</strong> ECFP4/Tanimoto with <code>reject | count | allow</code>, plus deterministic RAG.</li>
         <li><strong>Quality</strong>: 100% Lipinski; SA‑Score ≈3.3 for molecules; 100% UPT in sequences.</li>
         <li><strong>3‑command quickstart</strong>: install, simulate via <code>MOCK_LLM</code>, produce an HTML report.</li>
@@ -89,6 +94,28 @@
         <a href="https://github.com/EurekaMesh-Labs/eurekamesh/blob/main/docs/CCAD_PAPER_DRAFT.md" target="_blank" rel="noopener">CCAD_PAPER_DRAFT.md</a>
         (<a href="https://raw.githubusercontent.com/EurekaMesh-Labs/eurekamesh/main/docs/CCAD_PAPER_DRAFT.md" target="_blank" rel="noopener">raw</a>).
       </div>
+    </section>
+
+    <section>
+      <h2>Mini example (why duplicates hurt)</h2>
+      <pre><code># Prompt (simplified)
+Generate 10 drug-like SMILES. One per line. No numbering.
+
+# Raw LLM output (example)
+CCO
+CCN
+OCC     # duplicate of CCO (notation)
+CCO     # exact duplicate
+c1ccccc1
+CCN     # exact duplicate
+CC(=O)O
+CCOC
+CCBr
+CCCl
+
+# Naive baseline → 10 generated, 6 unique → UPT 60%
+# CCAD (canon + context + exact/fuzzy) → avoids repeats → UPT ~72%</code></pre>
+      <p><strong>Baseline (clarified)</strong>: prompt with <em>no</em> canonicalization, <em>no</em> anti‑dup context, and <em>no</em> real‑time filters/dedup.</p>
     </section>
 
     <section>

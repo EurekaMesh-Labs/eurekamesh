@@ -1,6 +1,6 @@
 # CCAD: Cumulative Context Anti-Duplication for Efficient LLM-Based Hypothesis Generation
 
-**Authors:** [Your Name], [Affiliations]
+**Authors:** Marco Soliva (EurekaMesh Labs)
 
 **Keywords:** Large Language Models, Hypothesis Generation, Drug Discovery, Synthetic Biology, Token Efficiency, Retrieval-Augmented Generation
 
@@ -10,7 +10,7 @@
 
 Large Language Models (LLMs) have emerged as powerful tools for hypothesis generation in scientific domains, but suffer from inefficiency due to generating duplicate or near-duplicate outputs. We introduce **Cumulative Context Anti-Duplication (CCAD)**, a modular framework that improves token efficiency in LLM-based hypothesis generation by **≈15–18% absolute** (from an experimentally measured **54.0% ± 8.7%** naive baseline to **~70–72%**) through: (1) domain-specific canonicalization, (2) cumulative anti-duplication context injection, (3) real-time exact deduplication, and (4) optional retrieval-augmented generation (RAG) with semantic prototypes. We validate CCAD in two distinct combinatorial spaces—drug discovery (molecular structures) and synthetic biology (protein sequences)—demonstrating consistent performance. In drug discovery, CCAD achieves ~72% token efficiency (unique items per total generated) with 100% Lipinski compliance and average synthetic accessibility score of 3.36, while maintaining 100% efficiency in the sparser protein sequence space. Ablation studies reveal that canonicalization and context guidance contribute the majority of improvements, with exact deduplication providing robustness and RAG enhancements adding incremental gains. We release CCAD as an open-source framework with domain adapters for drug discovery and synthetic biology, with preliminary support for materials science, enabling researchers to efficiently explore molecular and sequence spaces.
 
-**Significance Statement:** This work addresses a critical inefficiency in LLM-based scientific discovery: the generation of duplicate hypotheses that waste computational resources. Our CCAD framework provides a general, modular solution that improves token efficiency by 15% in validated domains (molecular and sequence spaces), making LLM-powered exploration more cost-effective and scalable.
+**Significance Statement:** This work addresses a critical inefficiency in LLM-based scientific discovery: the generation of duplicate hypotheses that waste computational resources. Our CCAD framework provides a general, modular solution that improves token efficiency by ~15–18% in validated domains (molecular and sequence spaces), making LLM-powered exploration more cost-effective and scalable.
 
 ---
 
@@ -274,6 +274,25 @@ CCAD is implemented in Python 3.11+ with:
 
 Code available at: [GitHub URL]
 
+### 3.5 Reproducibility Checklist
+
+- Environment: Python 3.11; RDKit via `environment.yml` or `pip` per README
+- Seeds/config: centralized in `code/config.py` and environment variables
+- Offline smoke test (no API):
+  ```
+  pip install -e .
+  export MOCK_LLM=$'CCO\nCCN\nC1=CC=CC=C1\nCC(=O)O\nCCO'
+  make e2e
+  # open report/index.html
+  ```
+- Live experiment (OpenAI):
+  ```
+  export OPENAI_API_KEY=...
+  PYTHONPATH=code RUNS=1 TARGET=100 ENABLE_FUZZY=1 FUZZY_POLICY=reject FUZZY_THRESHOLD=0.92 \
+  MAX_CONTEXT_ITEMS=100 MAX_PER_CALL=30 MIN_PER_CALL=10 MPLBACKEND=Agg \
+  python -m experiments.abtest_anti_dup_context
+  ```
+
 ---
 
 ## 4. EXPERIMENTS
@@ -285,6 +304,8 @@ Code available at: [GitHub URL]
 2. **Synthetic Biology:** Thermostable enzyme variants (sequence space)
 
 **Baseline:** Naive prompting without CCAD (raw LLM; n=3; UPT 54.0% ± 8.7%)
+  
+Baseline definition (clarified): prompt with no canonicalization, no anti‑duplication context, and no real‑time filtering/deduplication.
 
 **LLM:** GPT-4o (temperature 0.8, max_tokens 2000)
 
@@ -303,7 +324,7 @@ Code available at: [GitHub URL]
 
 **Target:** 500 unique EGFR kinase inhibitors
 
-**Prompt Template:**
+**Prompt Template (illustrative):**
 ```
 Generate drug-like molecules targeting EGFR kinase.
 
@@ -312,7 +333,7 @@ Requirements:
 - Lipinski-compliant (MW 150-500, LogP < 5, HBD ≤ 5, HBA ≤ 10)
 - Synthetic accessibility (SA-Score < 4 preferred)
 - Structurally diverse (avoid close analogs)
-- Novel (not in training data if possible)
+- Novel relative to a provided reference set (if available)
 
 [Anti-dup context injected here]
 
@@ -376,18 +397,18 @@ Figure 2: Ablation summary (baseline reported as mean ± std, n=3).
 
 ![Ablation Summary](figures/ablation_summary.png)
 
-To quantify each component's contribution, we perform ablation analysis:
+To illustrate component roles, we outline an ablation trajectory (rows with * are illustrative; validated rows in bold):
 
-| Component | UPT | Dup Rate | Δ UPT | Mechanism |
-|-----------|-----|----------|-------|-----------|
-| Naive prompting (raw, n=3) | 54.0% ± 8.7% | — | - | No deduplication |
-| + SMILES canonicalization | 62.5%* | 33.0%* | +5.5% | Detect notation variants |
-| + Anti-dup context (50) | 68.0%* | 26.0%* | +5.5% | Guide LLM away from seen |
-| + Exact hash dedup | **71.6%** | **21.7%** | +3.6% | Real-time filtering (CCAD) |
-| + RAG cluster prototypes | 71.8%* | 21.4%* | +0.2% | Compressed context |
-| + Fuzzy (ECFP4/Tanimoto; policy=count) | **72.0%** | **21.2%** | +0.2% | Semantic diversity |
+| Component | UPT | Dup Rate | Mechanism |
+|-----------|-----|----------|-----------|
+| Naive prompting (raw, n=3) | 54.0% ± 8.7% | — | No deduplication |
+| + SMILES canonicalization | 62.5%* | 33.0%* | Detect notation variants |
+| + Anti-dup context (K=50) | 68.0%* | 26.0%* | Guide LLM away from seen |
+| + Exact hash dedup | **71.6%** | **21.7%** | Real-time filtering (CCAD) |
+| + RAG cluster prototypes | 71.8%* | 21.4%* | Compressed context |
+| + Fuzzy (ECFP4/Tanimoto; policy=count) | **72.0%** | **21.2%** | Semantic diversity |
 
-Baseline reported as mean ± std (n=3). Rows marked with * are estimated; bold rows are experimentally validated.
+We avoid reporting per-component Δ values unless experimentally measured; a full ablation series is left for future work.
 
 **Analysis:**
 - **Canonicalization** and **anti-dup context** contribute 73% of total improvement (+11% UPT)
